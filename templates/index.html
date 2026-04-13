@@ -36,7 +36,7 @@ async function calcular() {
     const valor = parseFloat(document.getElementById("valor").value);
     const desconto = parseFloat(document.getElementById("desconto").value) || 0;
     const vip = document.getElementById("vip").checked;
-    const response = await fetch("http://127.0.0.1:5000/cashback", {
+    const response = await fetch("/cashback", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -56,7 +56,7 @@ document.getElementById("resultado").innerText =
 }
 
 async function carregarHistorico() {
-    const response = await fetch("http://127.0.0.1:5000/historico");
+    const response = await fetch("/historico");
     const data = await response.json();
 
     const lista = document.getElementById("historico");
