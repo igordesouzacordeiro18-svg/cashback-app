@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 from cashback import calcular_cashback  # importa sua função
 from db import salvar_consulta, buscar_historico
@@ -7,10 +7,9 @@ app = Flask(__name__)
 CORS(app)
 
 
-# Rota inicial (só pra testar se a API está funcionando)
 @app.route('/')
 def home():
-    return "API funcionando 🚀"
+    return render_template("index.html")
 
 
 # Rota de teste (usa valores fixos)
