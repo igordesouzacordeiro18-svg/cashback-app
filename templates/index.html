@@ -30,47 +30,67 @@
 
     <h2>Histórico</h2>
     <ul id="historico"></ul>
+</div>
 
 <script>
 async function calcular() {
     const valor = parseFloat(document.getElementById("valor").value);
     const desconto = parseFloat(document.getElementById("desconto").value) || 0;
     const vip = document.getElementById("vip").checked;
-    const response = await fetch("/cashback", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            valor: valor,
-            desconto: desconto,
-            vip: vip
-        })
-    });
 
-    const data = await response.json();
-document.getElementById("resultado").innerText =
-    `Você recebeu R$ ${data.cashback} de cashback 💰`;
+    // validação obrigatória
+    if (isNaN(valor)) {
+        alert("Digite um valor válido!");
+        return;
+    }
 
-    carregarHistorico();
+    try {
+        const response = await fetch(window.location.origin + "/cashback", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                valor: valor,
+                desconto: desconto,
+                vip: vip
+            })
+        });
+
+        const data = await response.json();
+
+        document.getElementById("resultado").innerText =
+            `Você recebeu R$ ${data.cashback} de cashback 💰`;
+
+        carregarHistorico();
+
+    } catch (error) {
+        console.error(error);
+        alert("Erro ao calcular cashback. Tente novamente.");
+    }
 }
 
 async function carregarHistorico() {
-    const response = await fetch("/historico");
-    const data = await response.json();
+    try {
+        const response = await fetch(window.location.origin + "/historico");
+        const data = await response.json();
 
-    const lista = document.getElementById("historico");
-    lista.innerHTML = "";
+        const lista = document.getElementById("historico");
+        lista.innerHTML = "";
 
-    data.forEach(item => {
-        const li = document.createElement("li");
-        li.innerText = `${item.tipo_cliente} - R$ ${item.valor} → Cashback: R$ ${item.cashback}`;
-        lista.appendChild(li);
-    });
+        data.forEach(item => {
+            const li = document.createElement("li");
+            li.innerText = `${item.tipo_cliente} - R$ ${item.valor} → Cashback: R$ ${item.cashback}`;
+            lista.appendChild(li);
+        });
+
+    } catch (error) {
+        console.error("Erro ao carregar histórico:", error);
+    }
 }
 
 window.onload = carregarHistorico;
 </script>
-</div>
+
 </body>
 </html>
