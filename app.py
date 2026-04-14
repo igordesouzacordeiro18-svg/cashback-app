@@ -62,8 +62,11 @@ def cashback():
         ip = request.remote_addr
         tipo_cliente = "VIP" if is_vip else "Normal"
 
-        salvar_consulta(ip, tipo_cliente, valor, resultado)
-
+        try:
+            salvar_consulta(ip, tipo_cliente, valor, resultado)
+        except:
+            pass
+    
         return jsonify({
             "cashback": resultado,
             "status": "ok"
@@ -76,27 +79,7 @@ def cashback():
 #Retorna histórico de consultas do usuário baseado no IP
 @app.route('/historico')
 def historico():
-    try:
-        ip = request.remote_addr
-        dados = buscar_historico(ip)
-
-        if not dados:
-            return jsonify([])
-
-        resultado = []
-
-        for item in dados:
-            resultado.append({
-                "tipo_cliente": item[0],
-                "valor": item[1],
-                "cashback": item[2]
-            })
-
-        return jsonify(resultado)
-
-    except Exception as e:
-        print("ERRO HISTORICO:", str(e))
-        return jsonify([]), 500
+    return jsonify([])
 
 
 if __name__ == '__main__':
