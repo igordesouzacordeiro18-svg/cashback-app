@@ -44,25 +44,28 @@ def testar_salvar():
 # Rota principal (recebe dados frontend e retorna cashback)
 @app.route('/cashback', methods=['POST'])
 def cashback():
-    data = request.json
+    try:
+        data = request.json
 
-    valor = float(data.get('valor') or 0)
-    desconto = float(data.get('desconto') or 0)
-    is_vip = bool(data.get('vip'))
+        valor = float(data.get('valor', 0))
+        desconto = float(data.get('desconto', 0))
+        is_vip = bool(data.get('vip'))
 
-    if valor <= 0:
-        return jsonify({"error": "Valor inválido"}), 400
+        if valor <= 0:
+            return jsonify({"error": "Valor inválido"}), 400
 
-    resultado = calcular_cashback(valor, desconto, is_vip)
+        resultado = calcular_cashback(valor, desconto, is_vip)
 
-    ip = request.remote_addr
+        ip = request.remote_addr
+        tipo_cliente = "VIP" if is_vip else "Normal"
 
-    tipo_cliente = "VIP" if is_vip else "Normal"
+        salvar_consulta(ip, tipo_cliente, valor, resultado)
 
-    salvar_consulta(ip, tipo_cliente, valor, resultado)
+        return jsonify({"cashback": resultado})
 
-    return jsonify({"cashback": resultado})
-
+    except Exception as e:
+        print("ERRO:", e)
+        return jsonify({"error": "Erro interno no servidor"}), 500
 
 #Retorna histórico de consultas do usuário baseado no IP
 @app.route('/historico')
