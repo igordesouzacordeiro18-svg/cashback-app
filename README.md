@@ -16,6 +16,7 @@ Clientes VIP recebem +10% de bônus sobre o cashback base
 Compras acima de R$ 500 recebem o cashback dobrado (para todos os clientes)
 
 ⚙️ TECNOLOGIAS UTILIZADAS
+
 Python (Flask)
 HTML5
 CSS3
