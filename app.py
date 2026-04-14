@@ -47,43 +47,56 @@ def cashback():
     try:
         data = request.json
 
-        valor = float(data.get('valor', 0))
-        desconto = float(data.get('desconto', 0))
-        is_vip = bool(data.get('vip'))
+        valor = float(data.get('valor') or 0)
+        desconto = float(data.get('desconto') or 0)
+        is_vip = str(data.get('vip')).lower() == "true"
 
         if valor <= 0:
             return jsonify({"error": "Valor inválido"}), 400
 
         resultado = calcular_cashback(valor, desconto, is_vip)
 
+        if resultado is None:
+            return jsonify({"error": "Erro no cálculo"}), 500
+
         ip = request.remote_addr
         tipo_cliente = "VIP" if is_vip else "Normal"
 
         salvar_consulta(ip, tipo_cliente, valor, resultado)
 
-        return jsonify({"cashback": resultado})
+        return jsonify({
+            "cashback": resultado,
+            "status": "ok"
+        })
 
     except Exception as e:
-        print("ERRO:", e)
-        return jsonify({"error": "Erro interno no servidor"}), 500
-
+        print("ERRO BACKEND:", e)
+        return jsonify({"error": "Erro interno"}), 500
+    
 #Retorna histórico de consultas do usuário baseado no IP
 @app.route('/historico')
 def historico():
-    ip = request.remote_addr
+    try:
+        ip = request.remote_addr
+        dados = buscar_historico(ip)
 
-    dados = buscar_historico(ip)
+        if not dados:
+            return jsonify([])
 
-    resultado = []
+        resultado = []
 
-    for item in dados:
-        resultado.append({
-            "tipo_cliente": item[0],
-            "valor": item[1],
-            "cashback": item[2]
-        })
+        for item in dados:
+            resultado.append({
+                "tipo_cliente": item[0],
+                "valor": item[1],
+                "cashback": item[2]
+            })
 
-    return jsonify(resultado)
+        return jsonify(resultado)
+
+    except Exception as e:
+        print("ERRO HISTORICO:", str(e))
+        return jsonify([]), 500
 
 
 if __name__ == '__main__':

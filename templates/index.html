@@ -59,8 +59,13 @@ async function calcular() {
 
         const data = await response.json();
 
-        document.getElementById("resultado").innerText =
-            `Você recebeu R$ ${data.cashback} de cashback 💰`;
+        if (data.cashback !== undefined) {
+    document.getElementById("resultado").innerText =
+        `Você recebeu R$ ${data.cashback} de cashback 💰`;
+        } else {
+    document.getElementById("resultado").innerText =
+        `Erro: ${data.error}`;
+}
 
         carregarHistorico();
 
