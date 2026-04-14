@@ -3,7 +3,9 @@ from flask_cors import CORS
 from cashback import calcular_cashback  # importa sua função
 from db import salvar_consulta, buscar_historico
 
+#Flask iniciado
 app = Flask(__name__)
+#Requisição entre frontend e backend
 CORS(app)
 
 
@@ -27,14 +29,19 @@ def testar_salvar():
 
     resultado = calcular_cashback(valor, desconto, is_vip)
 
+    #Captura IP do usuário
     ip = request.remote_addr
+
+    #Define o tipo de cliente
     tipo_cliente = "VIP" if is_vip else "Normal"
 
+    #Salva histórico da consulta
     salvar_consulta(ip, tipo_cliente, valor, resultado)
 
     return jsonify({"cashback": resultado, "status": "salvo no banco"})
 
-# Rota principal (recebe dados)
+
+# Rota principal (recebe dados frontend e retorna cashback)
 @app.route('/cashback', methods=['POST'])
 def cashback():
     data = request.json
@@ -45,18 +52,16 @@ def cashback():
 
     resultado = calcular_cashback(valor, desconto, is_vip)
 
-    #PEGAR IP DO USUÁRIO
     ip = request.remote_addr
 
-    #DEFINIR TIPO DE CLIENTE
     tipo_cliente = "VIP" if is_vip else "Normal"
 
-    #SALVAR NO BANCO
     salvar_consulta(ip, tipo_cliente, valor, resultado)
 
-    #RESPOSTA
     return jsonify({"cashback": resultado})
 
+
+#Retorna histórico de consultas do usuário baseado no IP
 @app.route('/historico')
 def historico():
     ip = request.remote_addr

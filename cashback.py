@@ -5,12 +5,13 @@ def calcular_cashback(valor_compra, desconto, is_vip):
     # 2. Cashback base (5%)
     cashback = valor_final * 0.05
 
-    # 3. Promoção: dobra cashback se valor > 500
+       # 3. Bônus VIP: aumento de 10% no cashback base
     if is_vip:
         cashback += cashback * 0.10
 
-    # 4. Bônus VIP (10% sobre o cashback)
+    # 4. Promoção: cashback é dobrado para compras acima de R$ 500
     if valor_final >= 500:
         cashback *= 2
 
+    #5. Arredonda resultado final para 2 casas decimais
     return round(cashback, 2)
