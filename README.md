@@ -17,13 +17,13 @@ Compras acima de R$ 500 recebem o cashback dobrado (para todos os clientes)
 
 ⚙️ TECNOLOGIAS UTILIZADAS
 
-Python (Flask)
-HTML5
-CSS3
-JavaScript (Vanilla JS)
-MySQL
-Gunicorn
-Render (deploy)
+.Python (Flask)
+.HTML5
+.CSS3
+.JavaScript (Vanilla JS)
+.MySQL
+.Gunicorn
+.Render (deploy)
 
 FUNCIONALIDADES
 -Cálculo de cashback em tempo real
