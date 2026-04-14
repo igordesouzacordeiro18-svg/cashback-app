@@ -46,9 +46,12 @@ def testar_salvar():
 def cashback():
     data = request.json
 
-    valor = data.get('valor')
-    desconto = data.get('desconto')
-    is_vip = data.get('vip')
+    valor = float(data.get('valor') or 0)
+    desconto = float(data.get('desconto') or 0)
+    is_vip = bool(data.get('vip'))
+
+    if valor <= 0:
+        return jsonify({"error": "Valor inválido"}), 400
 
     resultado = calcular_cashback(valor, desconto, is_vip)
 
